@@ -17,6 +17,7 @@
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r79/three.min.js"></script>
+<script src="js/orbitControls.js"></script>
 <script type="x-shader/x-vertex" id="vertexShader">
     //classical perlin noise 
     
@@ -251,9 +252,11 @@ window.addEventListener('load', function () {
     // grab the container from the DOM
     container = document.getElementById("container");
 
+    
     // create a scene
     scene = new THREE.Scene();
     scene.background = new THREE.Color( 0xffffff );
+    scene.fog = new THREE.FogExp2( 0xcccccc, 0.02 );
 
     // create a camera the size of the browser window
     // and place it 100 units away, looking towards the center of the scene
@@ -264,8 +267,10 @@ window.addEventListener('load', function () {
         10000);
     camera.position.z = 200;
     camera.target = new THREE.Vector3(0, 0, 0);
-
     scene.add(camera);
+    
+
+
 
     material = new THREE.ShaderMaterial( {
 
@@ -294,9 +299,17 @@ window.addEventListener('load', function () {
     // create the renderer and attach it to the DOM
     renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor( scene.fog.color );
 
 
     container.appendChild(renderer.domElement);
+    
+    
+    				controls = new THREE.OrbitControls( camera, renderer.domElement );
+				//controls.addEventListener( 'change', render ); // add this only if there is no animation loop (requestAnimationFrame)
+				controls.enableDamping = true;
+				controls.dampingFactor = 0.25;
+				controls.enableZoom = true;
 
     render();
 
